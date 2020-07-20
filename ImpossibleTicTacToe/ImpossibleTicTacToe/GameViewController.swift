@@ -39,7 +39,6 @@ class GameViewController: UIViewController {
     // Do any additional setup after loading the view.
     view.backgroundColor = .white
     setUpSubviews()
-    makeSymbol(systemName: oSystemName, row: 1, col: 2)
     gameLoop()
   }
   
@@ -65,6 +64,37 @@ class GameViewController: UIViewController {
     lines[3].widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.95).isActive = true
     lines[3].centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
     lines[3].centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: UIScreen.main.bounds.width*19/120).isActive = true
+    
+    for row in 0...2 {
+      for col in 0...2 {
+        boardClickableCompartments[row][col].tag = 3*row + col
+        boardClickableCompartments[row][col].addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(boardClicked)))
+        boardClickableCompartments[row][col].translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(boardClickableCompartments[row][col])
+        boardClickableCompartments[row][col].widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width*19/60).isActive = true
+        boardClickableCompartments[row][col].heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width*19/60).isActive = true
+        switch row {
+          case 0:
+            boardClickableCompartments[row][col].centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: -UIScreen.main.bounds.width*19/60).isActive = true
+          case 1:
+            boardClickableCompartments[row][col].centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+          case 2:
+            boardClickableCompartments[row][col].centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: UIScreen.main.bounds.width*19/60).isActive = true
+          default: return
+        }
+        switch col {
+          case 0:
+            boardClickableCompartments[row][col].centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor, constant: -UIScreen.main.bounds.width*19/60).isActive = true
+          case 1:
+            boardClickableCompartments[row][col].centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+          case 2:
+            boardClickableCompartments[row][col].centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor, constant: UIScreen.main.bounds.width*19/60).isActive = true
+          default: return
+        }
+      }
+    }
+    
+    
   }
   
   private func gameLoop() {
@@ -72,7 +102,7 @@ class GameViewController: UIViewController {
       if turn % 2 == 1 {  // player1's turn
         
       } else {  // computer's turn
-        
+
       }
     }
   }
@@ -101,6 +131,13 @@ class GameViewController: UIViewController {
         symbol.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor, constant: UIScreen.main.bounds.width*19/60).isActive = true
       default: return
     }
+  }
+  
+  @objc func boardClicked(_ gestureRecognizer: UITapGestureRecognizer) {
+    guard gestureRecognizer.view != nil else { return }
+    let row = Int(gestureRecognizer.view!.tag / 3)
+    let col = gestureRecognizer.view!.tag % 3
+    makeSymbol(systemName: "xmark", row: row, col: col)
   }
 }
 
