@@ -30,14 +30,16 @@ class GameViewController: UIViewController {
     ["", "", ""],
     ["", "", ""]
   ]
-  private var isGameOver: Bool = false
-  private var isPlayer1Turn: Bool = true
+  
+  private let xSystemName = "xmark"
+  private let oSystemName = "circle"
   
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
     view.backgroundColor = .white
     setUpSubviews()
+    makeSymbol(systemName: oSystemName, row: 1, col: 2)
     gameLoop()
   }
   
@@ -66,28 +68,39 @@ class GameViewController: UIViewController {
   }
   
   private func gameLoop() {
-    
+    for turn in 1...9 {
+      if turn % 2 == 1 {  // player1's turn
+        
+      } else {  // computer's turn
+        
+      }
+    }
   }
   
-  private func makeX() {
-    let x = UIImageView(image: UIImage(systemName: "xmark"))
-    x.translatesAutoresizingMaskIntoConstraints = false
-    view.addSubview(x)
-    x.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width*16/60).isActive = true
-    x.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width*16/60).isActive = true
-    x.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-    x.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+  private func makeSymbol(systemName: String, row: Int, col: Int) {
+    let symbol = UIImageView(image: UIImage(systemName: systemName))
+    symbol.translatesAutoresizingMaskIntoConstraints = false
+    view.addSubview(symbol)
+    symbol.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width*16/60).isActive = true
+    symbol.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width*16/60).isActive = true
+    switch row {
+      case 0:
+        symbol.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: -UIScreen.main.bounds.width*19/60).isActive = true
+      case 1:
+        symbol.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+      case 2:
+        symbol.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: UIScreen.main.bounds.width*19/60).isActive = true
+      default: return
+    }
+    switch col {
+      case 0:
+        symbol.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor, constant: -UIScreen.main.bounds.width*19/60).isActive = true
+      case 1:
+        symbol.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+      case 2:
+        symbol.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor, constant: UIScreen.main.bounds.width*19/60).isActive = true
+      default: return
+    }
   }
-  
-  private func makeO() {
-    let o = UIImageView(image: UIImage(systemName: "circle"))
-    o.translatesAutoresizingMaskIntoConstraints = false
-    view.addSubview(o)
-    o.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width*16/60).isActive = true
-    o.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width*16/60).isActive = true
-    o.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-    o.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
-  }
-  
 }
 
