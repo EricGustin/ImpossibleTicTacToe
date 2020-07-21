@@ -27,6 +27,14 @@ class GameViewController: UIViewController {
     return button
   }()
   
+  private let homeButton: UIButton = {
+    let button = UIButton()
+    button.setBackgroundImage(UIImage(systemName: "house"), for: .normal)
+    button.tintColor = .black
+    button.translatesAutoresizingMaskIntoConstraints = false
+    return button
+  }()
+  
   private var boardClickableCompartments: [[UIView]] = [
     [UIView(), UIView(), UIView()],
     [UIView(), UIView(), UIView()],
@@ -121,6 +129,13 @@ class GameViewController: UIViewController {
     refreshButton.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.1).isActive = true
     refreshButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30).isActive = true
     refreshButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
+    
+    homeButton.addTarget(self, action: #selector(goToMainMenuVC), for: .touchUpInside)
+    view.addSubview(homeButton)
+    homeButton.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.1).isActive = true
+    homeButton.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.1).isActive = true
+    homeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -30).isActive = true
+    homeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
   }
   
   private func gameLoop() {
@@ -130,23 +145,35 @@ class GameViewController: UIViewController {
         isPlayer1Turn = true
       } else {  // computer's turn
         isPlayer1Turn = false
-        var bestScore = -Double.infinity
-        var move = (0, 0)
-        for row in 0...2 {
-          for col in 0...2 {
-            if board[row][col] == "" {
-              board[row][col] = oSystemName
-              let score = minimax(curBoard: board, depth: 0, isMaximizing: false)
-              board[row][col] = ""
-              if score > bestScore {
-                bestScore = score
-                move = (row, col)
+        if Double.random(in: 0..<1) > levelDifficulty {  // make random move
+          while true {
+            let randomRow = Int.random(in: 0...2)
+            let randomCol = Int.random(in: 0...2)
+            if board[randomRow][randomCol] == "" {
+              board[randomRow][randomCol] = oSystemName
+              makeSymbol(systemName: oSystemName, row: randomRow, col: randomCol)
+              break
+            }
+          }
+        } else {  // make optimal move
+          var bestScore = -Double.infinity
+          var move = (0, 0)
+          for row in 0...2 {
+            for col in 0...2 {
+              if board[row][col] == "" {
+                board[row][col] = oSystemName
+                let score = minimax(curBoard: board, depth: 0, isMaximizing: false)
+                board[row][col] = ""
+                if score > bestScore {
+                  bestScore = score
+                  move = (row, col)
+                }
               }
             }
           }
+          board[move.0][move.1] = oSystemName
+          makeSymbol(systemName: oSystemName, row: move.0, col: move.1)
         }
-        board[move.0][move.1] = oSystemName
-        makeSymbol(systemName: oSystemName, row: move.0, col: move.1)
       }
     } else {
       endGame()
@@ -291,6 +318,10 @@ class GameViewController: UIViewController {
     isPlayer1Turn = true
     turn = 0
     gameLoop()
+  }
+  
+  @objc func goToMainMenuVC() {
+    self.dismiss(animated: false, completion: nil)
   }
 }
 

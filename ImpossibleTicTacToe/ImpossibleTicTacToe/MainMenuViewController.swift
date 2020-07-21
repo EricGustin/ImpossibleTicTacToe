@@ -70,7 +70,4 @@ class MainMenuViewController: UIViewController {
     vc.modalPresentationStyle = .fullScreen
     self.present(vc, animated: false, completion: nil)
   }
-  
-  
-  
 }
