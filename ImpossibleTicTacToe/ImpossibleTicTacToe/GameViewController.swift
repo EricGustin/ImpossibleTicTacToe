@@ -145,7 +145,7 @@ class GameViewController: UIViewController {
         isPlayer1Turn = true
       } else {  // computer's turn
         isPlayer1Turn = false
-        if Double.random(in: 0..<1) > levelDifficulty {  // make random move
+        if (Double.random(in: 0..<1) - 0.6) > levelDifficulty {  // make random move
           while true {
             let randomRow = Int.random(in: 0...2)
             let randomCol = Int.random(in: 0...2)
@@ -300,6 +300,16 @@ class GameViewController: UIViewController {
     for row in 0...2 {
       for col in 0...2 {
         boardClickableCompartments[row][col].isUserInteractionEnabled = false
+      }
+    }
+    UIView.animate(withDuration: 0.3) {
+      
+    }
+    UIView.animate(withDuration: 0.3, animations: {
+      self.refreshButton.transform = CGAffineTransform.init(scaleX: 1.3, y: 1.3)
+    }) { (complete) in
+      UIView.animate(withDuration: 0.3) {
+        self.refreshButton.transform = .identity
       }
     }
   }
