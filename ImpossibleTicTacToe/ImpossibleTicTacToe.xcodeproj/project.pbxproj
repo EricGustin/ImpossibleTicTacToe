@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,7 +14,7 @@
 		FAB2E41F24C5780700535BD8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAB2E41E24C5780700535BD8 /* Assets.xcassets */; };
 		FAB2E42224C5780700535BD8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAB2E42024C5780700535BD8 /* LaunchScreen.storyboard */; };
 		FAD545EF24C6759B00D7BE78 /* MainMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD545EE24C6759B00D7BE78 /* MainMenuViewController.swift */; };
-		FAD545F124C6A61300D7BE78 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAD545F024C6A61300D7BE78 /* GoogleService-Info.plist */; };
+		FAD545F524C6BB3B00D7BE78 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FAD545F424C6BB3B00D7BE78 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,9 +27,9 @@
 		FAB2E41924C5780500535BD8 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		FAB2E41E24C5780700535BD8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FAB2E42124C5780700535BD8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		FAB2E42324C5780700535BD8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FAD545EE24C6759B00D7BE78 /* MainMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuViewController.swift; sourceTree = "<group>"; };
-		FAD545F024C6A61300D7BE78 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FAD545F424C6BB3B00D7BE78 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FAD545F624C6BB7E00D7BE78 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +58,6 @@
 				AD26622C7FCA8DD9125F0AB6 /* Pods-ImpossibleTicTacToe.debug.xcconfig */,
 				A7B7F4381F7D95157C0FCA15 /* Pods-ImpossibleTicTacToe.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -89,8 +88,8 @@
 				FAD545EE24C6759B00D7BE78 /* MainMenuViewController.swift */,
 				FAB2E41E24C5780700535BD8 /* Assets.xcassets */,
 				FAB2E42024C5780700535BD8 /* LaunchScreen.storyboard */,
-				FAB2E42324C5780700535BD8 /* Info.plist */,
-				FAD545F024C6A61300D7BE78 /* GoogleService-Info.plist */,
+				FAD545F624C6BB7E00D7BE78 /* Info.plist */,
+				FAD545F424C6BB3B00D7BE78 /* GoogleService-Info.plist */,
 			);
 			path = ImpossibleTicTacToe;
 			sourceTree = "<group>";
@@ -157,7 +156,7 @@
 			files = (
 				FAB2E42224C5780700535BD8 /* LaunchScreen.storyboard in Resources */,
 				FAB2E41F24C5780700535BD8 /* Assets.xcassets in Resources */,
-				FAD545F124C6A61300D7BE78 /* GoogleService-Info.plist in Resources */,
+				FAD545F524C6BB3B00D7BE78 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
