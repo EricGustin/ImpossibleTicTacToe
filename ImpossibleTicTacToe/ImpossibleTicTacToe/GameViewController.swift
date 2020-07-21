@@ -19,6 +19,14 @@ class GameViewController: UIViewController {
     return views
   }()
   
+  private let refreshButton: UIButton = {
+    let button = UIButton()
+    button.setBackgroundImage(UIImage(systemName: "arrow.clockwise"), for: .normal)
+    button.tintColor = .black
+    button.translatesAutoresizingMaskIntoConstraints = false
+    return button
+  }()
+  
   private var boardClickableCompartments: [[UIView]] = [
     [UIView(), UIView(), UIView()],
     [UIView(), UIView(), UIView()],
@@ -31,15 +39,24 @@ class GameViewController: UIViewController {
     ["", "", ""]
   ]
   
+  private var symbols: [UIImageView] = []
   private let xSystemName = "xmark"
   private let oSystemName = "circle"
   private var isPlayer1Turn = true
   private var turn = 0
-  private var sumOfOutcomes = 0.0
+  private var levelDifficulty: Double = 0
+  
+  init(levelDifficulty: Double) {
+    super.init(nibName: nil, bundle: nil)
+    self.levelDifficulty = levelDifficulty
+  }
+  
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
     // Do any additional setup after loading the view.
     view.backgroundColor = .white
     setUpSubviews()
@@ -97,6 +114,13 @@ class GameViewController: UIViewController {
         }
       }
     }
+    
+    refreshButton.addTarget(self, action: #selector(restartGame), for: .touchUpInside)
+    view.addSubview(refreshButton)
+    refreshButton.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.1).isActive = true
+    refreshButton.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.1).isActive = true
+    refreshButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30).isActive = true
+    refreshButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
   }
   
   private func gameLoop() {
@@ -133,9 +157,9 @@ class GameViewController: UIViewController {
     var varCurBoard = curBoard
     let result = isGameOver(currentPosition: curBoard)
     if result == 10.0 {
-      return result
+      return result - depth
     } else if result == -10.0 {
-      return result
+      return result + depth
     } else if isNoMoreMoves(position: curBoard) {
       return 0
     }
@@ -171,27 +195,32 @@ class GameViewController: UIViewController {
   }
   
   private func makeSymbol(systemName: String, row: Int, col: Int) {
-    let symbol = UIImageView(image: UIImage(systemName: systemName))
-    symbol.translatesAutoresizingMaskIntoConstraints = false
-    view.addSubview(symbol)
-    symbol.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width*16/60).isActive = true
-    symbol.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width*16/60).isActive = true
+    symbols.append(UIImageView(image: UIImage(systemName: systemName)))
+    symbols.last!.translatesAutoresizingMaskIntoConstraints = false
+    if systemName == xSystemName {
+      symbols.last!.tintColor = .systemBlue
+    } else {
+      symbols.last!.tintColor = .systemRed
+    }
+    view.addSubview(symbols.last!)
+    symbols.last!.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width*16/60).isActive = true
+    symbols.last!.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width*16/60).isActive = true
     switch row {
       case 0:
-        symbol.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: -UIScreen.main.bounds.width*19/60).isActive = true
+        symbols.last!.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: -UIScreen.main.bounds.width*19/60).isActive = true
       case 1:
-        symbol.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+        symbols.last!.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
       case 2:
-        symbol.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: UIScreen.main.bounds.width*19/60).isActive = true
+        symbols.last!.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: UIScreen.main.bounds.width*19/60).isActive = true
       default: return
     }
     switch col {
       case 0:
-        symbol.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor, constant: -UIScreen.main.bounds.width*19/60).isActive = true
+        symbols.last!.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor, constant: -UIScreen.main.bounds.width*19/60).isActive = true
       case 1:
-        symbol.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        symbols.last!.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
       case 2:
-        symbol.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor, constant: UIScreen.main.bounds.width*19/60).isActive = true
+        symbols.last!.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor, constant: UIScreen.main.bounds.width*19/60).isActive = true
       default: return
     }
     board[row][col] = systemName
@@ -246,6 +275,22 @@ class GameViewController: UIViewController {
         boardClickableCompartments[row][col].isUserInteractionEnabled = false
       }
     }
+  }
+  
+  @objc func restartGame() {
+    for row in 0...2 {
+      for col in 0...2 {
+        boardClickableCompartments[row][col].isUserInteractionEnabled = true
+      }
+    }
+    for symbol in symbols {
+      symbol.removeFromSuperview()
+    }
+    symbols.removeAll()
+    board = [["","",""], ["","",""], ["","",""]]
+    isPlayer1Turn = true
+    turn = 0
+    gameLoop()
   }
 }
 
