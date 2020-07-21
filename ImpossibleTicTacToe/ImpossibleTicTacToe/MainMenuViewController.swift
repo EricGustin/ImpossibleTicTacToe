@@ -7,8 +7,11 @@
 //
 
 import UIKit
+import GoogleMobileAds
 
-class MainMenuViewController: UIViewController {
+class MainMenuViewController: UIViewController, GADBannerViewDelegate {
+  
+  private var bannerView: GADBannerView!
   
   private let tictactoeImage: UIImageView = {
     let imageView = UIImageView(image: UIImage(named: "tictactoe@4x"))
@@ -47,6 +50,17 @@ class MainMenuViewController: UIViewController {
   }
   
   private func setUpSubviews() {
+    
+    bannerView = GADBannerView(adSize: kGADAdSizeBanner)
+    bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+    bannerView.rootViewController = self
+    bannerView.load(GADRequest())
+    bannerView.delegate = self
+    bannerView.translatesAutoresizingMaskIntoConstraints = false
+    view.addSubview(bannerView)
+    bannerView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+    bannerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+    
     view.addSubview(tictactoeImage)
     tictactoeImage.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.75).isActive = true
     tictactoeImage.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.75).isActive = true
@@ -69,5 +83,44 @@ class MainMenuViewController: UIViewController {
     let vc = GameViewController(levelDifficulty: Double(gestureRecognizer.view!.tag / 3))
     vc.modalPresentationStyle = .fullScreen
     self.present(vc, animated: false, completion: nil)
+  }
+  
+  
+  
+  // GADBannerViewDelegates
+  /// Tells the delegate an ad request loaded an ad.
+  func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+    bannerView.alpha = 0
+    UIView.animate(withDuration: 1) {
+      bannerView.alpha = 1
+    }
+  }
+
+  /// Tells the delegate an ad request failed.
+  func adView(_ bannerView: GADBannerView,
+      didFailToReceiveAdWithError error: GADRequestError) {
+    print("adView:didFailToReceiveAdWithError: \(error.localizedDescription)")
+  }
+
+  /// Tells the delegate that a full-screen view will be presented in response
+  /// to the user clicking on an ad.
+  func adViewWillPresentScreen(_ bannerView: GADBannerView) {
+    print("adViewWillPresentScreen")
+  }
+
+  /// Tells the delegate that the full-screen view will be dismissed.
+  func adViewWillDismissScreen(_ bannerView: GADBannerView) {
+    print("adViewWillDismissScreen")
+  }
+
+  /// Tells the delegate that the full-screen view has been dismissed.
+  func adViewDidDismissScreen(_ bannerView: GADBannerView) {
+    print("adViewDidDismissScreen")
+  }
+
+  /// Tells the delegate that a user click will open another app (such as
+  /// the App Store), backgrounding the current app.
+  func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
+    print("adViewWillLeaveApplication")
   }
 }

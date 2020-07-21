@@ -1,0 +1,6 @@
+framework module Pods_ImpossibleTicTacToe {
+  umbrella header "Pods-ImpossibleTicTacToe-umbrella.h"
+
+  export *
+  module * { export * }
+}
