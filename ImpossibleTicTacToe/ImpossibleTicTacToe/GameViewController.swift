@@ -35,9 +35,11 @@ class GameViewController: UIViewController {
   private let oSystemName = "circle"
   private var isPlayer1Turn = true
   private var turn = 0
+  private var sumOfOutcomes = 0.0
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
     // Do any additional setup after loading the view.
     view.backgroundColor = .white
     setUpSubviews()
@@ -95,37 +97,77 @@ class GameViewController: UIViewController {
         }
       }
     }
-    
-    
   }
   
   private func gameLoop() {
-    if !isGameOver(currentPosition: board) {
+    if isGameOver(currentPosition: board) == 0 && !isNoMoreMoves(position: board) {
       turn += 1
       if turn % 2 == 1 {  // player1's turn
         isPlayer1Turn = true
       } else {  // computer's turn
         isPlayer1Turn = false
-        //      var depth = 0
-        //      for row in 0...2 {
-        //        for col in 0...2 {
-        //          if board[row][col] == "" {
-        //            depth += 1
-        //          }
-        //        }
-        //      }
-        //      minimax(position: board, depth: depth, isMaximizingPlayer: true)
-        outer: for row in 0...2 {
+        var bestScore = -Double.infinity
+        var move = (0, 0)
+        for row in 0...2 {
           for col in 0...2 {
             if board[row][col] == "" {
-              makeSymbol(systemName: oSystemName, row: row, col: col)
-              print("break")
-              break outer
+              board[row][col] = oSystemName
+              let score = minimax(curBoard: board, depth: 0, isMaximizing: false)
+              board[row][col] = ""
+              if score > bestScore {
+                bestScore = score
+                move = (row, col)
+              }
             }
           }
         }
+        board[move.0][move.1] = oSystemName
+        makeSymbol(systemName: oSystemName, row: move.0, col: move.1)
       }
-    } else { endGame() }
+    } else {
+      endGame()
+    }
+  }
+  
+  private func minimax(curBoard: [[String]], depth: Double, isMaximizing: Bool) -> Double {
+    var varCurBoard = curBoard
+    let result = isGameOver(currentPosition: curBoard)
+    if result == 10.0 {
+      return result
+    } else if result == -10.0 {
+      return result
+    } else if isNoMoreMoves(position: curBoard) {
+      return 0
+    }
+    
+    if isMaximizing {
+      var bestScore = -Double.infinity
+      for row in 0...2 {
+        for col in 0...2 {
+          if varCurBoard[row][col] == "" {
+            varCurBoard[row][col] = oSystemName
+            let score = minimax(curBoard: varCurBoard, depth: depth+1, isMaximizing: !isMaximizing)
+            varCurBoard[row][col] = ""
+            bestScore = max(score, bestScore)
+          }
+        }
+      }
+      return bestScore
+    }
+    else {
+      var bestScore = Double.infinity
+      for row in 0...2 {
+        for col in 0...2 {
+          if varCurBoard[row][col] == "" {
+            varCurBoard[row][col] = xSystemName
+            let score = minimax(curBoard: varCurBoard, depth: depth+1, isMaximizing: !isMaximizing)
+            varCurBoard[row][col] = ""
+            bestScore = min(score, bestScore)
+          }
+        }
+      }
+      return bestScore
+    }
   }
   
   private func makeSymbol(systemName: String, row: Int, col: Int) {
@@ -166,27 +208,36 @@ class GameViewController: UIViewController {
     }
   }
   
-  private func minimax(position: [[String]], depth: Int, isMaximizingPlayer: Bool) {
-    //if depth == 0
-    gameLoop()
-//    makeSymbol(systemName: oSystemName, row: 2, col: 2)
-//    board[2][2] = "o"
-    
-  }
-  
-  private func isGameOver(currentPosition: [[String]]) -> Bool {
-    if (currentPosition[0][0] != "" && ((currentPosition[0][0] == currentPosition[0][1] && currentPosition[0][0] == currentPosition[0][2]) ||
+  private func isGameOver(currentPosition: [[String]]) -> Double {
+    if (currentPosition[0][0] == oSystemName && ((currentPosition[0][0] == currentPosition[0][1] && currentPosition[0][0] == currentPosition[0][2]) ||
       (currentPosition[0][0] == currentPosition[1][0] && currentPosition[0][0] == currentPosition[2][0]) ||
       (currentPosition[0][0] == currentPosition[1][1] && currentPosition[0][0] == currentPosition[2][2]))) ||
-      (currentPosition[2][2] != "" && ((currentPosition[2][2] == currentPosition[2][1] && currentPosition[2][2] == currentPosition[2][0]) ||
+      (currentPosition[2][2] == oSystemName && ((currentPosition[2][2] == currentPosition[2][1] && currentPosition[2][2] == currentPosition[2][0]) ||
       currentPosition[2][2] == currentPosition[1][2] && currentPosition[2][2] == currentPosition[0][2])) ||
-      (currentPosition[1][1] != "" && ((currentPosition[1][1] == currentPosition[1][0] && currentPosition[1][1] == currentPosition[1][2]) ||
+      (currentPosition[1][1] == oSystemName && ((currentPosition[1][1] == currentPosition[1][0] && currentPosition[1][1] == currentPosition[1][2]) ||
       (currentPosition[1][1] == currentPosition[0][1] && currentPosition[1][1] == currentPosition[2][1]) ||
       (currentPosition[1][1] == currentPosition[2][0] && currentPosition[1][1] == currentPosition[0][2]))) {
-      print("game over")
-      return true
+      return 10.0
+    } else if (currentPosition[0][0] == xSystemName && ((currentPosition[0][0] == currentPosition[0][1] && currentPosition[0][0] == currentPosition[0][2]) ||
+    (currentPosition[0][0] == currentPosition[1][0] && currentPosition[0][0] == currentPosition[2][0]) ||
+    (currentPosition[0][0] == currentPosition[1][1] && currentPosition[0][0] == currentPosition[2][2]))) ||
+    (currentPosition[2][2] == xSystemName && ((currentPosition[2][2] == currentPosition[2][1] && currentPosition[2][2] == currentPosition[2][0]) ||
+    currentPosition[2][2] == currentPosition[1][2] && currentPosition[2][2] == currentPosition[0][2])) ||
+    (currentPosition[1][1] == xSystemName && ((currentPosition[1][1] == currentPosition[1][0] && currentPosition[1][1] == currentPosition[1][2]) ||
+    (currentPosition[1][1] == currentPosition[0][1] && currentPosition[1][1] == currentPosition[2][1]) ||
+    (currentPosition[1][1] == currentPosition[2][0] && currentPosition[1][1] == currentPosition[0][2]))) {
+      return -10.0
     }
-    return false
+    return 0.0
+  }
+  
+  private func isNoMoreMoves(position: [[String]]) -> Bool {
+    for row in 0...2 {
+      if position[row].contains("") {
+        return false
+      }
+    }
+    return true
   }
   
   private func endGame() {
